@@ -9,6 +9,7 @@ app.get('/', (req, res)=> res.sendFile(path.join(__dirname, 'index.html')));
 app.post('/api/auth', async(req, res, next)=> {
   try {
     res.send({ token: await User.authenticate(req.body)});
+    //send to local storage {token: session_token}
   }
   catch(ex){
     next(ex);
@@ -18,6 +19,7 @@ app.post('/api/auth', async(req, res, next)=> {
 app.get('/api/auth', async(req, res, next)=> {
   try {
     res.send(await User.byToken(req.headers.authorization));
+    //get User object and send back
   }
   catch(ex){
     next(ex);

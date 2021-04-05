@@ -53,7 +53,7 @@ User.authenticate = async({ username, password })=> {
   });
   if(user){
       
-    return await jwt.sign({userId: user.id}, SECRET_KEY) 
+    return await jwt.sign({userId: user.id}, SECRET_KEY) //create a token for the 'session'
   }
   const error = Error('bad credentials');
   error.status = 401;
