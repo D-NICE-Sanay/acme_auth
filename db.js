@@ -1,13 +1,18 @@
 const Sequelize = require('sequelize');
+const jwt = require('jsonwebtoken')
 const { STRING } = Sequelize;
 const config = {
   logging: false
 };
 
+const SECRET_KEY = process.env.JWT
+
+// process.env.JWT = 'ourSecretKey'
+
 if(process.env.LOGGING){
   delete config.logging;
 }
-// const conn = new Sequelize(process.env.DATABASE_URL || 'postgres://localhost/acme_db', config);
+//  const conn = new Sequelize(process.env.DATABASE_URL || 'postgres://localhost/acme_db', config);
 
 const conn = new Sequelize('postgres://mahfouzbasith@localhost:5432/acme_db');
 
@@ -16,11 +21,17 @@ const User = conn.define('user', {
   password: STRING
 });
 
+// const token = jwt.sign({userId: 2}, SECRET_KEY)
+// const token_Lucy = jwt.sign({userId: 1}, SECRET_KEY)
+// const verifyGood = jwt.verify(token, SECRET_KEY)
+
+
 User.byToken = async(token)=> {
   try {
-    const user = await User.findByPk(token);
-    if(user){
-      return user;
+    // const user = await User.findByPk(token); //
+    const verify = await jwt.verify(token, SECRET_KEY)
+    if(verify){
+      return await User.findByPk(verify.userId)
     }
     const error = Error('bad credentials');
     error.status = 401;;
@@ -41,7 +52,8 @@ User.authenticate = async({ username, password })=> {
     }
   });
   if(user){
-    return user.id; 
+      
+    return await jwt.sign({userId: user.id}, SECRET_KEY) 
   }
   const error = Error('bad credentials');
   error.status = 401;
