@@ -42,7 +42,7 @@
       }
     }
 
-
+    // const bcrypt = import ('bcrypt');
     class App extends React.Component{
       constructor(){
         super();
@@ -51,6 +51,7 @@
         };
         this.signIn = this.signIn.bind(this);
         this.logout = this.logout.bind(this);
+        //this.hashPassword = this.hashPassword.bind(this)
       }
       logout(){
         window.localStorage.removeItem('token');
@@ -71,7 +72,16 @@
       componentDidMount(){
         this.attemptTokenLogin();
       }
+
+      // async hashPassword(password) {
+      //   const SALT_COUNT = 5;
+      //   const hashedPwd = await bcrypt.hash(password, SALT_COUNT);
+      // }
+
       async signIn(credentials){
+        // const hashedPwd = await this.hashPassword(credentials.password)
+        // credentials.password = hashedPwd
+        // // const newCreds = {...credentials, password: hashedPwd}
         let response = await axios.post('/api/auth', credentials);
         const { token } = response.data;
         window.localStorage.setItem('token', token);
